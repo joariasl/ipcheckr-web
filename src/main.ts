@@ -1,4 +1,5 @@
 import './style.css'
+import './navbar.css'
 
 import { getIPs } from './httpclient'
 import { StunClient } from './stunclient'
