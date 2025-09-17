@@ -30,3 +30,29 @@ This approach makes it:
 - Fast: minimal latency, results are resolved on the client side, using the nearest CDN edge location.
 - Private: no need to send extra data to third-party servers.
 - Reliable: works seamlessly for both IPv4 and IPv6.
+
+## Quick Start
+
+### 1. Dependencies
+
+```bash
+npm install
+```
+
+### 2. Developer mode
+
+```bash
+npm run dev
+```
+
+### 3. Build
+
+```bash
+npm run build
+```
+
+### 4. Preview the build
+
+```bash
+npm run preview
+```
