@@ -1,0 +1,54 @@
+name: cloudflare-pages-build-deployment-node
+
+on:
+  push:
+    branches:
+      - cf-pages
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cloudflare-pages
+          path: dist/
+          if-no-files-found: error
+
+  deploy:
+    needs: build
+
+    environment:
+      name: cloudflare-pages
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: cloudflare-pages
+          path: dist
+
+      - name: Deploy to Cloudflare Pages
+        id: deployment
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name="${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}" --branch="${{ github.ref_name }}"
