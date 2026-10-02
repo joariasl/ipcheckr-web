@@ -19,6 +19,11 @@ const ipStunEl = document.querySelector<HTMLSpanElement>('#ipstun')!;
 const ipv4El = document.querySelector<HTMLSpanElement>('#ipv4')!;
 const ipv6El = document.querySelector<HTMLSpanElement>('#ipv6')!;
 
+ipStunEl.textContent = "Fetching...";
+ipv4El.textContent = "Fetching...";
+ipv6El.textContent = "Fetching...";
+document.querySelector<HTMLSpanElement>('#user-agent')!.textContent = navigator.userAgent;
+
 var fetcher = new StunClient(
     (addrpair: { addr?: string; raddr?: string; }) => {
         if (addrpair.addr) {
@@ -66,11 +71,4 @@ getIPs('6').then(result => {
     if(err instanceof TypeError) {
         ipv6El.textContent = "Fetch failed (likely no IPv6 connectivity)";
     }
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-    ipStunEl.textContent = "Fetching...";
-    ipv4El.textContent = "Fetching...";
-    ipv6El.textContent = "Fetching...";
-    document.querySelector<HTMLSpanElement>('#user-agent')!.textContent = navigator.userAgent;
 });
