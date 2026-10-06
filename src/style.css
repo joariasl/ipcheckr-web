@@ -98,10 +98,19 @@ button:focus-visible {
 
 .ip-card span {
   display: block;
-  font-weight: 600;
-  font-size: 1.2em;
   font-family: monospace;
   user-select: all;
+}
+
+.ip-card span.ip-address {
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+.ip-card span.resolved-time {
+  font-size: 0.9em;
+  opacity: 0.7;
+  margin-top: 0.5rem;
 }
 
 @media (prefers-color-scheme: dark) {
