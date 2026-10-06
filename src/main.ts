@@ -7,7 +7,7 @@ import { StunClient } from './stunclient'
 function writePerformanceTime(element: HTMLSpanElement) {
     const performanceTimeEl = document.createElement("span");
     performanceTimeEl.className = "resolved-time";
-    performanceTimeEl.textContent = "(Resolved in " + performance.now() + " ms)";
+    performanceTimeEl.textContent = "(Resolved in " + Math.round(performance.now()) + " ms)";
     element.insertAdjacentElement("afterend", performanceTimeEl);
 }
 
