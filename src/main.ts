@@ -6,7 +6,7 @@ import { StunClient } from './stunclient'
 
 function writeIP(element: HTMLSpanElement, ip: string) {
     const ipEl = document.createElement("span");
-    ipEl.className = "ip-address";
+    ipEl.className = "ip-address copyable";
     ipEl.textContent = ip;
     element.insertAdjacentElement("beforeend", ipEl);
 }
@@ -38,7 +38,7 @@ ipv4El.insertAdjacentHTML("beforeend", `<span class="fetching">Fetching...</span
 ipv6El.insertAdjacentHTML("beforeend", `<span class="fetching">Fetching...</span>`);
 
 const userAgentEl = document.querySelector<HTMLParagraphElement>('#user-agent')!;
-userAgentEl.insertAdjacentHTML("beforeend", `<span class="user-agent">${navigator.userAgent}</span>`);
+userAgentEl.insertAdjacentHTML("beforeend", `<span class="user-agent copyable">${navigator.userAgent}</span>`);
 
 var fetcher = new StunClient(
     (addrpair: { addr?: string; raddr?: string; }) => {
