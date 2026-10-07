@@ -1,5 +1,7 @@
-document.addEventListener("click", async (e) => {
-  const block = e.target.closest(".copyable");
+document.addEventListener("click", async (e: MouseEvent) => {
+  if (!(e.target instanceof Element)) return;
+
+  const block = e.target.closest<HTMLElement>(".copyable");
   if (!block) return;
 
   const text = block.textContent!.trim();
