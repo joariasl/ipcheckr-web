@@ -99,12 +99,12 @@ button:focus-visible {
 .ip-card span {
   display: block;
   font-family: monospace;
-  user-select: all;
 }
 
 .ip-card span.ip-address {
   font-weight: 600;
   font-size: 1.2em;
+  user-select: all;
 }
 
 .ip-card span.ip-address ~ .ip-address {
