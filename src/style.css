@@ -30,16 +30,25 @@ body {
   min-height: 100vh;
 }
 
+h1,
+h2 {
+  margin: 0;
+  text-align: left;
+}
+
 h1 {
-  font-size: 3.2em;
   line-height: 1.1;
+}
+
+h2 {
+  line-height: 1;
+  font-size: 1.2em;
 }
 
 #app {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
 }
 
 header, footer {
@@ -60,7 +69,12 @@ header, footer {
 }
 
 .card {
-  padding: 2em;
+  padding: 2em 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  justify-content: center;
+  align-content: center;
 }
 
 .read-the-docs {
@@ -86,35 +100,71 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-.ip-card {
+.info-card {
   display: block;
-  margin: 1rem auto;
   padding: 1rem;
-  border: 1px solid #747bff;
+  border: 1px solid #6b7280;
   border-radius: 8px;
-  max-width: 400px;
-  background-color: #f9f9f9;
+  grid-column: span 2;
 }
 
-.ip-card span {
+.ip-card {
+  grid-column: span 1;
+  border-width: 2px;
+}
+
+.ip-card#ipv4 {
+  border-color: #10b981;
+}
+
+.ip-card#ipv4 h2 {
+  color: #10b981;
+}
+
+.ip-card#ipv6 {
+  border-color: #38bdf8;
+}
+
+.ip-card#ipv6 h2 {
+  color: #38bdf8;
+}
+
+@media (max-width: 600px) {
+  .ip-card#ipv4,
+  .ip-card#ipv6 {
+    grid-column: span 2;
+  }
+}
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.info-card span {
   display: block;
   font-family: monospace;
 }
 
-.ip-card span.ip-address {
+.info-card span.ip-address {
   font-weight: 600;
-  font-size: 1.2em;
+  font-size: 2em;
   user-select: all;
 }
 
-.ip-card span.ip-address ~ .ip-address {
+table.ip-resolution-records {
   margin-top: 0.5rem;
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
 }
 
-.ip-card span.resolved-time {
-  font-size: 0.9em;
-  opacity: 0.7;
-  margin-top: 0.25rem;
+table.ip-resolution-records th,
+table.ip-resolution-records td {
+  border: 1px solid #6b7280;
+  padding: 0.1rem;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -128,7 +178,7 @@ button:focus-visible {
   button {
     background-color: #1a1a1a;
   }
-  .ip-card {
+  .info-card {
     background-color: #1a1a1a;
   }
 }
