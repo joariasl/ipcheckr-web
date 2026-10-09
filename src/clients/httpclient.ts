@@ -1,6 +1,13 @@
 // Fetch IPv4 from 1.1.1.1/cdn-cgi/trace and IPv6 from 2606:4700:4700::1111/cdn-cgi/trace using HTTP client
 'use strict';
 
+import type { IPFamily } from '../models/ip-address';
+
+const traceUrls: Record<IPFamily, string> = {
+    IPv4: 'https://1.1.1.1/cdn-cgi/trace',
+    IPv6: 'https://[2606:4700:4700::1111]/cdn-cgi/trace',
+};
+
 export async function fetchIP(url: string): Promise<{ ip: string; loc: string; uag: string; } | null> {
     try {
         let result = {
@@ -34,14 +41,6 @@ export async function fetchIP(url: string): Promise<{ ip: string; loc: string; u
     }
 }
 
-export async function getIPs(family = '4') {
-    let ip = null;
-    if (family === '4') {
-        ip = await fetchIP('https://1.1.1.1/cdn-cgi/trace');
-    } else if (family === '6') {
-        ip = await fetchIP('https://[2606:4700:4700::1111]/cdn-cgi/trace');
-    } else {
-        throw new Error('Invalid family specified. Use "4" for IPv4 or "6" for IPv6.');
-    }
-    return ip;
+export async function getIPs(family: IPFamily) {
+    return fetchIP(traceUrls[family]);
 }
