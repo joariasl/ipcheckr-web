@@ -61,6 +61,7 @@ export class IPCheckerView {
         ipElement.className = 'ip-address copyable';
         ipElement.textContent = ipAddress.ip;
         familyElement.querySelector<HTMLSpanElement>('.ip-address')!.replaceWith(ipElement);
+        familyElement.querySelector<HTMLSpanElement>('.ip-error')?.remove();
     }
 
     showResolution(resolution: IPResolution) {
@@ -83,15 +84,24 @@ export class IPCheckerView {
     }
 
     showNotFound(family: IPFamily) {
-        const familyElement = this.familyElement(family);
-        familyElement.querySelector<HTMLSpanElement>('.ip-address')!.textContent = 'Not found';
-        familyElement.querySelector<HTMLSpanElement>('.status')?.remove();
+        this.showError(family, 'Not found');
     }
 
     showFetchFailure(family: IPFamily) {
+        this.showError(family, `Fetch failed (likely no ${family} connectivity)`);
+    }
+
+    private showError(family: IPFamily, message: string) {
         const familyElement = this.familyElement(family);
-        familyElement.querySelector<HTMLSpanElement>('.ip-address')!.textContent =
-            `Fetch failed (likely no ${family} connectivity)`;
+        const ipElement = familyElement.querySelector<HTMLSpanElement>('.ip-address')!;
+        ipElement.hidden = true;
+
+        familyElement.querySelector<HTMLSpanElement>('.ip-error')?.remove();
+        const errorElement = document.createElement('span');
+        errorElement.className = 'ip-error';
+        errorElement.setAttribute('role', 'alert');
+        errorElement.textContent = message;
+        ipElement.after(errorElement);
         familyElement.querySelector<HTMLSpanElement>('.status')?.remove();
     }
 

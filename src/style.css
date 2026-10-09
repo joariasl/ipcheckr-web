@@ -154,6 +154,14 @@ button:focus-visible {
   user-select: all;
 }
 
+.info-card span.ip-error {
+  font-weight: 600;
+}
+
+.info-card span[hidden] {
+  display: none;
+}
+
 table.ip-resolution-records {
   margin-top: 0.5rem;
   width: 100%;
