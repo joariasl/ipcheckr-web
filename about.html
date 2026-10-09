@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Learn how ipcheckr checks your public IPv4 and IPv6 addresses directly from your browser." />
+    <title>About ipcheckr</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link rel="stylesheet" href="/src/navbar.css" />
+    <link rel="stylesheet" href="/src/about.css" />
+  </head>
+  <body>
+    <header>
+      <nav class="navbar">
+        <a class="nav-brand" href="/">ipcheckr</a>
+        <div class="navbarNav">
+          <ul class="navbar-nav">
+            <li><a class="nav-link" href="/">Home</a></li>
+            <li><a class="nav-link" href="/about.html" aria-current="page">About</a></li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <main>
+      <article id="about" class="about-content">
+        <h1>About ipcheckr</h1>
+        <p class="about-intro">
+          ipcheckr is a lightweight, open-source tool that shows the public IPv4 and IPv6 addresses your
+          network uses to reach the internet.
+        </p>
+
+        <section aria-labelledby="why-ipcheckr">
+          <h2 id="why-ipcheckr">Why ipcheckr?</h2>
+          <p>
+            The project aims to make checking your public IP addresses simple and fast, with IPv6 treated
+            as a first-class part of the internet. It is free to use, open source, and has no ads.
+          </p>
+        </section>
+
+        <section aria-labelledby="how-it-works">
+          <h2 id="how-it-works">How it works</h2>
+          <p>
+            ipcheckr is a small HTML and JavaScript application. It checks your connection from your
+            browser using STUN (Session Traversal Utilities for NAT) and HTTPS requests to CDN services.
+            The returned addresses are the public addresses those services see for your connection.
+          </p>
+          <p>
+            Results are resolved in your browser rather than by a dedicated ipcheckr backend. Your
+            requests still contact the STUN and CDN services used for the checks.
+          </p>
+        </section>
+
+        <section aria-labelledby="privacy">
+          <h2 id="privacy">Privacy and open source</h2>
+          <p>
+            ipcheckr does not use tracking cookies or display ads. As the site uses CDN services,
+            those providers may set cookies needed for their services. The source code is available on
+            <a href="https://github.com/joariasl/ipcheckr-web" target="_blank" rel="noopener noreferrer">GitHub</a>
+            so you can see how the application works.
+          </p>
+        </section>
+      </article>
+    </main>
+    <footer>
+      <div>
+        <p>
+          &lt;/&gt; on <a href="https://github.com/joariasl/ipcheckr-web" target="_blank" rel="noopener noreferrer">GitHub</a>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
