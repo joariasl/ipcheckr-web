@@ -100,6 +100,12 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.ip-address {
+  font-family: monospace;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
 .info-card {
   display: block;
   padding: 1rem;
@@ -143,15 +149,9 @@ button:focus-visible {
   margin-bottom: 0.5rem;
 }
 
-.info-card span {
-  display: block;
-  font-family: monospace;
-}
-
-.info-card span.ip-address {
+.info-card > span.ip-address {
   font-weight: 600;
   font-size: 2em;
-  user-select: all;
 }
 
 .info-card span.ip-error {
