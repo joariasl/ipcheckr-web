@@ -71,8 +71,11 @@ export class IPCheckerView {
         protocolCell.textContent = resolution.protocol;
         row.append(protocolCell);
 
+        const ipElement = document.createElement('span');
+        ipElement.className = 'ip-address copyable';
+        ipElement.textContent = resolution.ip.ip;
         const ipCell = document.createElement('td');
-        ipCell.textContent = resolution.ip.ip;
+        ipCell.append(ipElement);
         row.append(ipCell);
 
         const performanceCell = document.createElement('td');
