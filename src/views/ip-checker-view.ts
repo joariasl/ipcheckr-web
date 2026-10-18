@@ -51,7 +51,9 @@ export class IPCheckerView {
 
     showResolving() {
         for (const family of ['IPv4', 'IPv6'] as const) {
-            this.familyElement(family).querySelector<HTMLSpanElement>('.status')!.textContent = 'Resolving...';
+            const progressElement = document.createElement('progress');
+            progressElement.textContent = 'Resolving...'
+            this.familyElement(family).querySelector<HTMLSpanElement>('.status')!.replaceChildren(progressElement);
         }
     }
 
