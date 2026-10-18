@@ -86,12 +86,35 @@ export class IPCheckerView {
         familyElement.querySelector<HTMLSpanElement>('.status')?.remove();
     }
 
-    showNotFound(family: IPFamily) {
-        this.showError(family, 'Not found');
+    showNotFound(family: IPFamily, protocol: 'STUN' | 'HTTP') {
+        const familyElement = this.familyElement(family);
+        familyElement.querySelector<HTMLSpanElement>('.status')?.remove();
+
+        const row = document.createElement('tr');
+        const protocolCell = document.createElement('td');
+        protocolCell.textContent = protocol;
+        row.append(protocolCell);
+
+        const ipElement = document.createElement('span');
+        ipElement.textContent = 'Not found';
+        const ipCell = document.createElement('td');
+        ipCell.append(ipElement);
+        row.append(ipCell);
+
+        const performanceCell = document.createElement('td');
+        row.append(performanceCell);
+
+        familyElement.querySelector<HTMLTableSectionElement>('.ip-resolution-records tbody')!.append(row);
     }
 
-    showFetchFailure(family: IPFamily) {
+    showFetchFailure(family: IPFamily, protocol: 'STUN' | 'HTTP') {
         this.showError(family, `Fetch failed (likely no ${family} connectivity)`);
+        const familyElement = this.familyElement(family);
+        familyElement.querySelector<HTMLSpanElement>('.status')?.remove();
+    }
+
+    showWarning(family: IPFamily, protocol: 'STUN' | 'HTTP') {
+        this.showError(family, `Resolution is taking longer than expected (likely no ${family} connectivity)`);
     }
 
     private showError(family: IPFamily, message: string) {
@@ -105,7 +128,6 @@ export class IPCheckerView {
         errorElement.setAttribute('role', 'alert');
         errorElement.textContent = message;
         ipElement.after(errorElement);
-        familyElement.querySelector<HTMLSpanElement>('.status')?.remove();
     }
 
     private familyElement(family: IPFamily) {
