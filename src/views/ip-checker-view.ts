@@ -15,34 +15,34 @@ export class IPCheckerView {
           <div>
             <h1>Your public IP</h1>
             <div class="card">
-              <div id="ipv4" class="info-card ip-card">
+              <article id="ipv4" class="info-card ip-card">
                 <div class="info-header">
                     <h2>IPv4</h2>
                     <span class="status"></span>
                 </div>
                 <span class="ip-address">-- -- -- --</span>
                 <table class="ip-resolution-records"><tbody></tbody></table>
-              </div>
-              <div id="ipv6" class="info-card ip-card">
+              </article>
+              <article id="ipv6" class="info-card ip-card">
                 <div class="info-header">
                     <h2>IPv6</h2>
                     <span class="status"></span>
                 </div>
                 <span class="ip-address">-- -- -- -- -- --</span>
                 <table class="ip-resolution-records"><tbody></tbody></table>
-              </div>
-              <div id="user-agent" class="info-card">
+              </article>
+              <article id="user-agent" class="info-card">
                 <div class="info-header">
                     <h2>User Agent</h2>
                 </div>
-              </div>
+              </article>
             </div>
           </div>
         `;
     }
 
     showUserAgent() {
-        const userAgentElement = this.root.querySelector<HTMLDivElement>('#user-agent')!;
+        const userAgentElement = this.root.querySelector<HTMLElement>('#user-agent')!;
         const userAgentSpan = document.createElement('span');
         userAgentSpan.className = 'user-agent copyable';
         userAgentSpan.textContent = navigator.userAgent;
@@ -131,6 +131,6 @@ export class IPCheckerView {
     }
 
     private familyElement(family: IPFamily) {
-        return this.root.querySelector<HTMLDivElement>(family === 'IPv4' ? '#ipv4' : '#ipv6')!;
+        return this.root.querySelector<HTMLElement>(family === 'IPv4' ? '#ipv4' : '#ipv6')!;
     }
 }
