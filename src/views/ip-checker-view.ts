@@ -107,13 +107,13 @@ export class IPCheckerView {
         familyElement.querySelector<HTMLTableSectionElement>('.ip-resolution-records tbody')!.append(row);
     }
 
-    showFetchFailure(family: IPFamily, protocol: 'STUN' | 'HTTP') {
+    showFetchFailure(family: IPFamily) {
         this.showError(family, `Fetch failed (likely no ${family} connectivity)`);
         const familyElement = this.familyElement(family);
         familyElement.querySelector<HTMLSpanElement>('.status')?.remove();
     }
 
-    showWarning(family: IPFamily, protocol: 'STUN' | 'HTTP') {
+    showWarning(family: IPFamily) {
         this.showError(family, `Resolution is taking longer than expected (likely no ${family} connectivity)`);
     }
 

@@ -19,8 +19,8 @@ const resolver = new IPResolutionService({
         view.showResolution(resolution);
     },
     onNotFound: (family, protocol) => view.showNotFound(family, protocol),
-    onFetchFailure: (family, protocol) => view.showFetchFailure(family, protocol),
-    onWarning: (family, protocol) => view.showWarning(family, protocol),
+    onFetchFailure: (family) => view.showFetchFailure(family),
+    onWarning: (family) => view.showWarning(family),
 });
 
 resolver.start();
