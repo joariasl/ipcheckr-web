@@ -33,7 +33,7 @@ export async function fetchIP(url: string): Promise<{ ip: string; loc: string; u
             throw new Error('IP not found in response');
         }
     } catch (error) {
-        console.error('Error fetching IP from', url, error);
+        console.error('Error fetching HTTP IP from', url, error);
         if(error instanceof TypeError) {
             throw error; // Propagar TypeError para manejo específico
         }

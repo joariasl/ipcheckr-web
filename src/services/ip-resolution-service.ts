@@ -48,13 +48,13 @@ export class IPResolutionService {
         try {
             const result = await getIPs(family);
             if (result?.ip) {
-                console.log(`${family} fetching completed`, performance.now());
+                console.log(`HTTP ${family} fetching completed`, performance.now());
                 this.options.onResolution(new IPResolution(new IPAddress(result.ip), 'HTTP'));
             } else {
                 this.options.onNotFound(family);
             }
         } catch (error) {
-            console.error(`Error fetching ${family}:`, error);
+            console.error(`Error fetching HTTP ${family}:`, error);
             if (error instanceof TypeError) {
                 this.options.onFetchFailure(family);
             }
