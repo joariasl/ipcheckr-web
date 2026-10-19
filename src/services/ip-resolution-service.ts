@@ -22,9 +22,14 @@ export class IPResolutionService {
     }
 
     start() {
+        performance.mark('start-resolution');
         void this.resolveStun();
         void this.resolveHttp('IPv4');
         void this.resolveHttp('IPv6');
+    }
+
+    private getResolutionTimeElapsed() {
+        return performance.now() - performance.getEntriesByName('start-resolution').pop()?.startTime!;
     }
 
     private async resolveStun() {
@@ -34,7 +39,7 @@ export class IPResolutionService {
                 (addrpair) => {
                     if (!addrpair.addr) return;
 
-                    console.log('STUN IP address found', addrpair.addr, performance.now());
+                    console.log('STUN IP address found', addrpair.addr, this.getResolutionTimeElapsed());
                     const ipAddress = new IPAddress(addrpair.addr);
                     const ipResolution = new IPResolution(ipAddress, 'STUN');
                     stunIPs.add(ipResolution);
@@ -65,7 +70,7 @@ export class IPResolutionService {
         try {
             const result = await getIPs(family);
             if (result?.ip) {
-                console.log(`HTTP ${family} fetching completed`, performance.now());
+                console.log(`HTTP ${family} fetching completed`, this.getResolutionTimeElapsed());
                 this.options.onResolution(new IPResolution(new IPAddress(result.ip), 'HTTP'));
             } else {
                 this.options.onNotFound(family, 'HTTP');

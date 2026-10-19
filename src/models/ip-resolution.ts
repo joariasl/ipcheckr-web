@@ -11,7 +11,7 @@ export class IPResolution {
     constructor(ip: IPAddress, protocol: string) {
         this.ip = ip;
         this.resolvedAt = Date.now();
-        this.performanceTime = performance.now();
+        this.performanceTime = performance.now()-performance.getEntriesByName('start-resolution').pop()?.startTime!;
         this.protocol = protocol;
     }
 }
