@@ -22,21 +22,49 @@ export class StunClient {
     }
 
     async start() {
-        return new Promise<void>((resolve) => {
+        const timeoutMillis = 10000;
+        return new Promise<void>((resolve, reject) => {
+            let completed = false;
+            const clearTimeoutAndCleanup = () => {
+                clearTimeout(timeout);
+                this.cleanup();
+            };
+            const timeout = setTimeout(() => {
+                if (completed) {
+                    return;
+                }
+                completed = true;
+                this.cleanup();
+                if (this.completionCallback) {
+                    this.completionCallback();
+                }
+                reject(new Error('STUN client timed out'));
+            }, timeoutMillis);
+
             this.pc = new RTCPeerConnection({
                 iceServers: iceServers,
             });
 
-            this.dc = this.pc.createDataChannel('');
+            try {
+                this.dc = this.pc.createDataChannel('');
+            } catch (error) {
+                clearTimeoutAndCleanup();
+                reject(error);
+                return;
+            }
 
             this.pc.addEventListener('icecandidate', (e) => {
                 if (!e.candidate) {
+                    if (completed) {
+                        return;
+                    }
+                    completed = true;
                     console.log('ICE gathering completed');
                     if (this.completionCallback) {
                         this.completionCallback();
                     }
+                    clearTimeoutAndCleanup();
                     resolve();
-                    this.cleanup();
                     return;
                 }
 
@@ -112,8 +140,13 @@ export class StunClient {
 
             (async () => {
                 if (this.pc) {
-                    const offer = await this.pc.createOffer();
-                    await this.pc.setLocalDescription(offer);
+                    try {
+                        const offer = await this.pc.createOffer();
+                        await this.pc.setLocalDescription(offer);
+                    } catch (error) {
+                        clearTimeoutAndCleanup();
+                        reject(error);
+                    }
                 }
             })();
         });
