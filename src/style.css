@@ -6,6 +6,7 @@
   color-scheme: light dark;
   color: #213547;
   background-color: #fff;
+  background-image: linear-gradient(135deg, #fff 0%, #f0f0f0 100%);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,11 +16,11 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: #000;
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #000;
 }
 
 body {
@@ -90,18 +91,19 @@ header, footer {
 .info-card {
   display: block;
   padding: 1rem;
-  border: 1px solid #6b7280;
+  border: 0.5px solid #6b7280;
   border-radius: 8px;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
   grid-column: span 2;
 }
 
 .ip-card {
   grid-column: span 1;
-  border-width: 2px;
 }
 
 .ip-card#ipv4 {
   border-color: #10b981;
+  background-image: linear-gradient(to right, #f4fffb, #e4f6f0);
 }
 
 .ip-card#ipv4 h2 {
@@ -110,6 +112,7 @@ header, footer {
 
 .ip-card#ipv6 {
   border-color: #38bdf8;
+  background-image: linear-gradient(to right, #f0faff, #e0f4fb);
 }
 
 .ip-card#ipv6 h2 {
@@ -147,24 +150,45 @@ table.ip-resolution-records {
   margin-top: 0.5rem;
   width: 100%;
   border-collapse: collapse;
-  border-radius: 8px;
 }
 
 table.ip-resolution-records th,
 table.ip-resolution-records td {
-  border: 1px solid #6b7280;
-  padding: 0.1rem;
+  padding: 0.1rem 0.5rem;
+}
+
+table.ip-resolution-records tr:not(:last-child) th,
+table.ip-resolution-records tr:not(:last-child) td {
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.24);
+}
+
+table.ip-resolution-records th:not(:last-child),
+table.ip-resolution-records td:not(:last-child) {
+  border-right: 0.5px solid rgba(0, 0, 0, 0.24);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     color: rgba(255, 255, 255, 0.87);
     background-color: #242424;
+    background-image: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+  }
+  a {
+    color: #f2f2f2;
   }
   a:hover {
-    color: #646cff;
+    color: #fff;
   }
   .info-card {
     background-color: #1a1a1a;
+  }
+  .ip-card#ipv4 {
+    background-image: linear-gradient(to right, #0a3d2b, #06402a);
+  }
+  .ip-card#ipv6 {
+    background-image: linear-gradient(to right, #0a3d5b, #06405a);
+  }
+  .ip-card#ipv6 h2 {
+    color: #38bdf8;
   }
 }
