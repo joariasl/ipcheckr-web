@@ -2,6 +2,10 @@
 
 import type { IPResolution } from '../models/ip-resolution';
 import type { IPAddress, IPFamily } from '../models/ip-address';
+import rawAppTemplate from '../templates/app.html?raw';
+
+const appTemplate = document.createElement('template');
+appTemplate.innerHTML = rawAppTemplate;
 
 export class IPCheckerView {
     private readonly root: HTMLDivElement;
@@ -11,34 +15,7 @@ export class IPCheckerView {
     }
 
     render() {
-        this.root.innerHTML = `
-          <div>
-            <h1>Your public IP</h1>
-            <div class="card">
-              <article id="ipv4" class="info-card ip-card">
-                <div class="info-header">
-                    <h2>IPv4</h2>
-                    <span class="status"></span>
-                </div>
-                <span class="ip-address">-- -- -- --</span>
-                <table class="ip-resolution-records"><tbody></tbody></table>
-              </article>
-              <article id="ipv6" class="info-card ip-card">
-                <div class="info-header">
-                    <h2>IPv6</h2>
-                    <span class="status"></span>
-                </div>
-                <span class="ip-address">-- -- -- -- -- --</span>
-                <table class="ip-resolution-records"><tbody></tbody></table>
-              </article>
-              <article id="user-agent" class="info-card">
-                <div class="info-header">
-                    <h2>User Agent</h2>
-                </div>
-              </article>
-            </div>
-          </div>
-        `;
+        this.root.replaceChildren(appTemplate.content.cloneNode(true));
     }
 
     showUserAgent() {

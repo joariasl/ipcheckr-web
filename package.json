@@ -9,7 +9,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/html-minifier-terser": "^7.0.2",
     "@types/node": "^26.6.4",
+    "html-minifier-terser": "^7.2.0",
     "typescript": "~5.8.3",
     "vite": "^7.1.2",
     "vite-plugin-minify": "^3.0.0"
