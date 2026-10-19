@@ -17,21 +17,25 @@ export async function fetchIP(url: string): Promise<{ ip: string; loc: string; u
             uag: "",
         };
         const response = await fetch(url, { signal: AbortSignal.timeout(requestTimeoutMillis) });
-        const text = await response.text();
-        const lines = text.split('\n');
-        for (const line of lines) {
-            if (line.startsWith('ip=')) {
-                result.ip = line.substring(3).trim();
-            } else if (line.startsWith('loc=')) {
-                result.loc = line.substring(4).trim();
-            } else if (line.startsWith('uag=')) {
-                result.uag = line.substring(4).trim();
+        if (response.ok) {
+            const text = await response.text();
+            const lines = text.split('\n');
+            for (const line of lines) {
+                if (line.startsWith('ip=')) {
+                    result.ip = line.substring(3).trim();
+                } else if (line.startsWith('loc=')) {
+                    result.loc = line.substring(4).trim();
+                } else if (line.startsWith('uag=')) {
+                    result.uag = line.substring(4).trim();
+                }
             }
-        }
-        if(result.ip) {
-            return result;
+            if(result.ip) {
+                return result;
+            } else {
+                throw new Error('IP not found in response');
+            }
         } else {
-            throw new Error('IP not found in response');
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
     } catch (error) {
         console.error('Error fetching HTTP IP from', url, error);
