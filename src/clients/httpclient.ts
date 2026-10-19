@@ -7,6 +7,7 @@ const traceUrls: Record<IPFamily, string> = {
     IPv4: 'https://1.1.1.1/cdn-cgi/trace',
     IPv6: 'https://[2606:4700:4700::1111]/cdn-cgi/trace',
 };
+const requestTimeoutMillis = 10000;
 
 export async function fetchIP(url: string): Promise<{ ip: string; loc: string; uag: string; } | null> {
     try {
@@ -15,7 +16,7 @@ export async function fetchIP(url: string): Promise<{ ip: string; loc: string; u
             loc: "",
             uag: "",
         };
-        const response = await fetch(url);
+        const response = await fetch(url, { signal: AbortSignal.timeout(requestTimeoutMillis) });
         const text = await response.text();
         const lines = text.split('\n');
         for (const line of lines) {
