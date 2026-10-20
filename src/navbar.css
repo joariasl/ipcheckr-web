@@ -39,6 +39,15 @@ nav.navbar a.nav-link:hover {
   text-decoration: underline;
 }
 
+@media (max-width: 600px) {
+  nav.navbar {
+    padding: 0 1rem;
+  }
+  nav.navbar a.nav-brand {
+    padding: 14px 4px;
+  }
+}
+  
 @media (prefers-color-scheme: dark) {
   nav.navbar a.nav-brand {
     color: #f2f2f2;
