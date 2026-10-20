@@ -52,8 +52,11 @@ h2 {
   padding: 2rem;
 }
 
-header, footer {
+header, main, footer {
   width: 100%;
+}
+
+header, footer {
   text-align: center;
 }
 
