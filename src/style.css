@@ -56,6 +56,10 @@ header, footer {
   text-align: center;
 }
 
+header {
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.24);
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -120,6 +124,10 @@ header, footer {
 }
 
 @media (max-width: 600px) {
+  #app {
+    padding: 1rem;
+  }
+
   .ip-card#ipv4,
   .ip-card#ipv6 {
     grid-column: span 2;
