@@ -124,7 +124,7 @@ header {
   color: #38bdf8;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   #app {
     padding: 1rem;
   }

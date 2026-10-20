@@ -1,8 +1,10 @@
 nav.navbar {
   display: flex;
+  margin: 0 auto;
+  max-width: 1280px;
+  padding: 0 2rem;
   align-items: center;
   overflow: hidden;
-  padding: 0 2rem;
 }
 
 nav.navbar .navbarNav {
@@ -39,7 +41,7 @@ nav.navbar a.nav-link:hover {
   text-decoration: underline;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   nav.navbar {
     padding: 0 1rem;
   }
