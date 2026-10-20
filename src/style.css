@@ -53,6 +53,7 @@ h2 {
 }
 
 header, footer {
+  width: 100%;
   text-align: center;
 }
 
