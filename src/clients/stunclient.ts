@@ -12,13 +12,21 @@ const rtcConfig: RTCConfiguration = {
     iceServers: iceServers,
 };
 
+export interface StunAddressPair {
+    addr: string;
+    port: string;
+    raddr?: string;
+    rport?: string;
+    type?: RTCIceCandidateType;
+}
+
 export class StunClient {
-    private addrCallback: (addrpair: { addr?: string; }) => void;
+    private addrCallback: (addrpair: StunAddressPair) => void;
     private completionCallback: () => void;
     private pc: RTCPeerConnection | null = null;
     private dc: RTCDataChannel | null = null;
 
-    constructor(addrCallback: (addrpair: { addr?: string; raddr?: string; }) => void, completionCallback: () => void) {
+    constructor(addrCallback: (addrpair: StunAddressPair) => void, completionCallback: () => void) {
         this.addrCallback = addrCallback;
         this.completionCallback = completionCallback;
     }
@@ -39,6 +47,64 @@ export class StunClient {
         //     // Útil para logging; no abortamos de inmediato.
         //     // console.warn('ICE/STUN error', e);
         // });
+    }
+
+    parseRtcIceCandidate(candidate: RTCIceCandidate): StunAddressPair {
+        const addressPair: StunAddressPair = {
+            addr: "",// Mapped address
+            port: "",// Mapped port
+            raddr: "",// Local address
+            rport: "", // Local port
+        };
+
+        // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnectionIceEvent/candidate
+        // https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate
+        // https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/address
+        if (candidate.address) {
+            addressPair.addr = candidate.address;
+            addressPair.port = String(candidate.port);
+            if (candidate.relatedAddress) {
+                addressPair.raddr = candidate.relatedAddress;
+                addressPair.rport = String(candidate.relatedPort);
+            }
+        } else {
+            // Fallback for browsers that don't provide candidate.address directly
+            // https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/candidate
+            // https://developer.mozilla.org/en-US/docs/Glossary/SDP
+            // https://datatracker.ietf.org/doc/html/rfc5245#section-15.1
+            const c = candidate.candidate;
+
+            // https://tools.ietf.org/id/draft-ietf-mmusic-ice-sip-sdp-14.html#rfc.section.5.1
+            // index 0 is "a=candidate:number"
+            // index 1 is component id
+            // index 2 is transport ("udp" or "tcp")
+            // index 3 is priority
+            // index 4 is the address we want
+            // index 5 is the port
+            // index 6 is always "typ"
+            // index 7 is the address type (host vs srflx). srflx is what the STUN server reported
+            // index 8 might be "raddr"
+            // index 9 will be the related address is index 8 was "raddr"
+            // everything else is extensions
+            let parts = c.split(" ");
+            if ((parts[7] === "srflx") && parts[4]) {
+                addressPair.addr = parts[4];
+                addressPair.port = parts[5];
+                if ((parts[8] == "raddr") && parts[9]) {
+                    addressPair.raddr = parts[9];
+                    addressPair.rport = parts[11];
+                }
+            }
+        }
+
+        // if webrtc address privacy is on, then the related address
+        // will be "0.0.0.0" or "::". So let's just hide that
+        if ((addressPair.raddr == "0.0.0.0") || (addressPair.raddr == "::")) {
+            addressPair.raddr = "";
+            addressPair.rport = "";
+        }
+
+        return addressPair;
     }
 
     async start() {
@@ -92,67 +158,12 @@ export class StunClient {
                     return;
                 }
 
-                let addrpair = {
-                    addr: "",// Mapped address
-                    port: "",// Mapped port
-                    raddr: "",// Local address
-                    rport: "", // Local port
-                };
-                // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnectionIceEvent/candidate
-                const candidate = e.candidate;
-                console.log('Candidate:', candidate);
-                // https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate
-                // https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/address
-                if (candidate.address) {
-                    if (candidate.type === "srflx") {
-                        addrpair.addr = candidate.address;
-                        addrpair.port = String(candidate.port);
-                        if (candidate.relatedAddress) {
-                            addrpair.raddr = candidate.relatedAddress;
-                            addrpair.rport = String(candidate.relatedPort);
-                        }
-                    }
-                } else {
-                    // Fallback for browsers that don't provide candidate.address directly
-                    // https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/candidate
-                    // https://developer.mozilla.org/en-US/docs/Glossary/SDP
-                    // https://datatracker.ietf.org/doc/html/rfc5245#section-15.1
-                    const c = e.candidate.candidate;
+                const addressPair = this.parseRtcIceCandidate(e.candidate);
 
-                    // https://tools.ietf.org/id/draft-ietf-mmusic-ice-sip-sdp-14.html#rfc.section.5.1
-                    // index 0 is "a=candidate:number"
-                    // index 1 is component id
-                    // index 2 is transport ("udp" or "tcp")
-                    // index 3 is priority
-                    // index 4 is the address we want
-                    // index 5 is the port
-                    // index 6 is always "typ"
-                    // index 7 is the address type (host vs srflx). srflx is what the STUN server reported
-                    // index 8 might be "raddr"
-                    // index 9 will be the related address is index 8 was "raddr"
-                    // everything else is extensions
-                    let parts = c.split(" ");
-                    if ((parts[7] === "srflx") && parts[4]) {
-                        addrpair.addr = parts[4];
-                        addrpair.port = parts[5];
-                        if ((parts[8] == "raddr") && parts[9]) {
-                            addrpair.raddr = parts[9];
-                            addrpair.rport = parts[11];
-                        }
-                    }
-                }
-
-                // if webrtc address privacy is on, then the related address
-                // will be "0.0.0.0" or "::". So let's just hide that
-                if ((addrpair.raddr == "0.0.0.0") || (addrpair.raddr == "::")) {
-                    addrpair.raddr = "";
-                    addrpair.rport = "";
-                }
-
-                if (addrpair.addr) {
-                    console.log("Found IP:", addrpair.addr, addrpair.port, "(", addrpair.raddr, addrpair.rport, ")");
+                if (addressPair.type === 'srflx') {
+                    console.log("Found IP:", addressPair.addr, addressPair.port, "(", addressPair.raddr, addressPair.rport, ")");
                     if (this.addrCallback) {
-                        this.addrCallback(addrpair);
+                        this.addrCallback(addressPair);
                     }
                 }
             });
