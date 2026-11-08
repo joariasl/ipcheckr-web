@@ -5,7 +5,7 @@ import { IPAddress } from '../models/ip-address';
 import type { IPFamily } from '../models/ip-address';
 import { IPResolution } from '../models/ip-resolution';
 import { IPResolutionRecords } from '../models/ip-resolution-records';
-import { StunClient } from '../clients/stunclient';
+import { StunClient, type StunAddressPair } from '../clients/stunclient';
 
 interface IPResolutionServiceOptions {
     onResolution: (resolution: IPResolution) => void;
@@ -36,11 +36,11 @@ export class IPResolutionService {
         const stunIPs = new IPResolutionRecords();
         try {
             const stunClient = new StunClient(
-                (addrpair) => {
-                    if (!addrpair.addr) return;
+                (addressPair: StunAddressPair) => {
+                    if (!addressPair.addr) return;
 
-                    console.log('STUN IP address found', addrpair.addr, this.getResolutionTimeElapsed());
-                    const ipAddress = new IPAddress(addrpair.addr);
+                    console.log('STUN IP address found', addressPair.addr, this.getResolutionTimeElapsed());
+                    const ipAddress = new IPAddress(addressPair.addr);
                     const ipResolution = new IPResolution(ipAddress, 'STUN');
                     stunIPs.add(ipResolution);
                     this.options.onResolution(ipResolution);
