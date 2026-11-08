@@ -8,17 +8,46 @@ const iceServers = [
     },
 ];
 
+const rtcConfig: RTCConfiguration = {
+    iceServers: iceServers,
+};
+
 export class StunClient {
-    addrCallback: (addrpair: { addr?: string; }) => void;
-    completionCallback: () => void;
-    pc: RTCPeerConnection | null;
-    dc: RTCDataChannel | null;
+    private addrCallback: (addrpair: { addr?: string; }) => void;
+    private completionCallback: () => void;
+    private pc: RTCPeerConnection;
+    private dc: RTCDataChannel | null;
 
     constructor(addrCallback: (addrpair: { addr?: string; raddr?: string; }) => void, completionCallback: () => void) {
         this.addrCallback = addrCallback;
         this.completionCallback = completionCallback;
-        this.pc = null;
+        this.pc = new RTCPeerConnection(rtcConfig);
         this.dc = null;
+        this.setupListeners();
+    }
+
+    private setupListeners(): void {
+        this.pc.addEventListener('icecandidate', (e) => {
+            if (e.candidate) {
+                console.log('ICE candidate:', e.candidate);
+            }
+        });
+
+        this.pc.addEventListener('icegatheringstatechange', () => {
+            console.log('ICE gathering state changed:', this.pc.iceGatheringState);
+            if (this.pc && this.pc.iceGatheringState === 'complete') {
+                console.log('ICE gathering state is complete');
+            }
+        });
+
+        this.pc.addEventListener('iceconnectionstatechange', () => {
+            console.log('ICE connection state changed:', this.pc.iceConnectionState);
+        });
+
+        // this.peerConnection.addEventListener('icecandidateerror', (e) => {
+        //     // Útil para logging; no abortamos de inmediato.
+        //     // console.warn('ICE/STUN error', e);
+        // });
     }
 
     async start() {
@@ -41,10 +70,6 @@ export class StunClient {
                 reject(new Error('STUN client timed out'));
             }, timeoutMillis);
 
-            this.pc = new RTCPeerConnection({
-                iceServers: iceServers,
-            });
-
             try {
                 this.dc = this.pc.createDataChannel('');
             } catch (error) {
@@ -53,7 +78,10 @@ export class StunClient {
                 return;
             }
 
-            this.pc.addEventListener('icecandidate', (e) => {
+            this.pc.addEventListener('icecandidate', (e: RTCPeerConnectionIceEvent) => {
+                // If e.candidate is null, it means ICE gathering is complete.
+                // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/icecandidate_event#description
+                // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnection/icecandidate_event#indicating_that_ice_gathering_is_complete
                 if (!e.candidate) {
                     if (completed) {
                         return;
@@ -74,8 +102,11 @@ export class StunClient {
                     raddr: "",// Local address
                     rport: "", // Local port
                 };
+                // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnectionIceEvent/candidate
                 const candidate = e.candidate;
                 console.log('Candidate:', candidate);
+                // https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate
+                // https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/address
                 if (candidate.address) {
                     if (candidate.type === "srflx") {
                         addrpair.addr = candidate.address;
@@ -86,7 +117,10 @@ export class StunClient {
                         }
                     }
                 } else {
-                    // Fallback for browsers that don't support candidate.address
+                    // Fallback for browsers that don't provide candidate.address directly
+                    // https://developer.mozilla.org/en-US/docs/Web/API/RTCIceCandidate/candidate
+                    // https://developer.mozilla.org/en-US/docs/Glossary/SDP
+                    // https://datatracker.ietf.org/doc/html/rfc5245#section-15.1
                     const c = e.candidate.candidate;
 
                     // https://tools.ietf.org/id/draft-ietf-mmusic-ice-sip-sdp-14.html#rfc.section.5.1
@@ -127,17 +161,6 @@ export class StunClient {
                 }
             });
 
-            this.pc.addEventListener('icegatheringstatechange', () => {
-                if (this.pc && this.pc.iceGatheringState === 'complete') {
-                    console.log('ICE gathering state is complete');
-                }
-            });
-
-            // this.pc.addEventListener('icecandidateerror', (e) => {
-            //     // Útil para logging; no abortamos de inmediato.
-            //     // console.warn('ICE/STUN error', e);
-            // });
-
             (async () => {
                 if (this.pc) {
                     try {
@@ -155,7 +178,6 @@ export class StunClient {
     cleanup() {
         if (this.pc) {
             this.pc.close();
-            this.pc = null;
         }
         if (this.dc) {
             this.dc.close();
