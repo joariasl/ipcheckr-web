@@ -15,36 +15,27 @@ const rtcConfig: RTCConfiguration = {
 export class StunClient {
     private addrCallback: (addrpair: { addr?: string; }) => void;
     private completionCallback: () => void;
-    private pc: RTCPeerConnection;
-    private dc: RTCDataChannel | null;
+    private pc: RTCPeerConnection | null = null;
+    private dc: RTCDataChannel | null = null;
 
     constructor(addrCallback: (addrpair: { addr?: string; raddr?: string; }) => void, completionCallback: () => void) {
         this.addrCallback = addrCallback;
         this.completionCallback = completionCallback;
-        this.pc = new RTCPeerConnection(rtcConfig);
-        this.dc = null;
-        this.setupListeners();
     }
 
-    private setupListeners(): void {
-        this.pc.addEventListener('icecandidate', (e) => {
-            if (e.candidate) {
-                console.log('ICE candidate:', e.candidate);
-            }
-        });
-
-        this.pc.addEventListener('icegatheringstatechange', () => {
-            console.log('ICE gathering state changed:', this.pc.iceGatheringState);
-            if (this.pc && this.pc.iceGatheringState === 'complete') {
+    private setupListeners(pc: RTCPeerConnection): void {
+        pc.addEventListener('icegatheringstatechange', () => {
+            console.log('ICE gathering state changed:', pc.iceGatheringState);
+            if (pc.iceGatheringState === 'complete') {
                 console.log('ICE gathering state is complete');
             }
         });
 
-        this.pc.addEventListener('iceconnectionstatechange', () => {
-            console.log('ICE connection state changed:', this.pc.iceConnectionState);
+        pc.addEventListener('iceconnectionstatechange', () => {
+            console.log('ICE connection state changed:', pc.iceConnectionState);
         });
 
-        // this.peerConnection.addEventListener('icecandidateerror', (e) => {
+        // pc.addEventListener('icecandidateerror', (e) => {
         //     // Útil para logging; no abortamos de inmediato.
         //     // console.warn('ICE/STUN error', e);
         // });
@@ -52,6 +43,10 @@ export class StunClient {
 
     async start() {
         const timeoutMillis = 10000;
+        this.cleanup();
+        this.pc = new RTCPeerConnection(rtcConfig);
+        this.setupListeners(this.pc);
+
         return new Promise<void>((resolve, reject) => {
             let completed = false;
             const clearTimeoutAndCleanup = () => {
