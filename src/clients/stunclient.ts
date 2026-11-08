@@ -64,7 +64,7 @@ export class StunClient {
         if (candidate.address) {
             addressPair.addr = candidate.address;
             addressPair.port = String(candidate.port);
-            addressPair.type = candidate.type || undefined;
+            addressPair.type = candidate.type as RTCIceCandidateType;
             if (candidate.relatedAddress) {
                 addressPair.raddr = candidate.relatedAddress;
                 addressPair.rport = String(candidate.relatedPort);
@@ -89,10 +89,10 @@ export class StunClient {
             // index 9 will be the related address is index 8 was "raddr"
             // everything else is extensions
             let parts = c.split(" ");
-            if ((parts[7] === "srflx") && parts[4]) {
+            if (parts[4]) {
                 addressPair.addr = parts[4];
                 addressPair.port = parts[5];
-                addressPair.type = parts[7] || undefined;
+                addressPair.type = parts[7] as RTCIceCandidateType;
                 if ((parts[8] == "raddr") && parts[9]) {
                     addressPair.raddr = parts[9];
                     addressPair.rport = parts[11];
