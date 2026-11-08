@@ -36,10 +36,17 @@ export class IPCheckerView {
 
     showIP(ipAddress: IPAddress) {
         const familyElement = this.familyElement(ipAddress.type);
+        const existingIpElement = familyElement.querySelector<HTMLSpanElement>('.ip-address');
+        
+        // Only show the first IP address for this family type (skip if already set to an actual IP)
+        if (existingIpElement && !existingIpElement.textContent?.includes('-')) {
+            return;
+        }
+        
         const ipElement = document.createElement('span');
         ipElement.className = 'ip-address copyable';
         ipElement.textContent = ipAddress.ip;
-        familyElement.querySelector<HTMLSpanElement>('.ip-address')!.replaceWith(ipElement);
+        existingIpElement!.replaceWith(ipElement);
         familyElement.querySelector<HTMLSpanElement>('.ip-error')?.remove();
     }
 
