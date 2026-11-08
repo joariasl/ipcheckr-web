@@ -44,8 +44,6 @@ export class StunClient {
     async start() {
         const timeoutMillis = 10000;
         this.cleanup();
-        this.pc = new RTCPeerConnection(rtcConfig);
-        this.setupListeners(this.pc);
 
         return new Promise<void>((resolve, reject) => {
             let completed = false;
@@ -64,6 +62,9 @@ export class StunClient {
                 }
                 reject(new Error('STUN client timed out'));
             }, timeoutMillis);
+
+            this.pc = new RTCPeerConnection(rtcConfig);
+            this.setupListeners(this.pc);
 
             try {
                 this.dc = this.pc.createDataChannel('');
