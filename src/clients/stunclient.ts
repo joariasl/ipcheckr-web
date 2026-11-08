@@ -55,6 +55,7 @@ export class StunClient {
             port: "",// Mapped port
             raddr: "",// Local address
             rport: "", // Local port
+            type: undefined,
         };
 
         // https://developer.mozilla.org/en-US/docs/Web/API/RTCPeerConnectionIceEvent/candidate
@@ -63,6 +64,7 @@ export class StunClient {
         if (candidate.address) {
             addressPair.addr = candidate.address;
             addressPair.port = String(candidate.port);
+            addressPair.type = candidate.type || undefined;
             if (candidate.relatedAddress) {
                 addressPair.raddr = candidate.relatedAddress;
                 addressPair.rport = String(candidate.relatedPort);
@@ -90,6 +92,7 @@ export class StunClient {
             if ((parts[7] === "srflx") && parts[4]) {
                 addressPair.addr = parts[4];
                 addressPair.port = parts[5];
+                addressPair.type = parts[7] || undefined;
                 if ((parts[8] == "raddr") && parts[9]) {
                     addressPair.raddr = parts[9];
                     addressPair.rport = parts[11];
@@ -159,6 +162,7 @@ export class StunClient {
                 }
 
                 const addressPair = this.parseRtcIceCandidate(e.candidate);
+                console.log("Parsed ICE candidate:", addressPair);
 
                 if (addressPair.type === 'srflx') {
                     console.log("Found IP:", addressPair.addr, addressPair.port, "(", addressPair.raddr, addressPair.rport, ")");
