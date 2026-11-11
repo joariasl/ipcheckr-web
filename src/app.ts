@@ -75,7 +75,10 @@ export class App {
     private handleConnectivityChange(isHealthy: boolean): void {
         this.view.updateConnectionStatus(isHealthy);
 
-        this.restartIPResolution();
+        // Only restart IP resolution when connectivity is restored
+        if (isHealthy) {
+            this.restartIPResolution();
+        }
     }
 
     /**
