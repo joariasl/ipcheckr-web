@@ -1,7 +1,6 @@
 'use strict';
 
 import type { IPResolution } from './models/ip-resolution';
-import type { ConnectivityCheckResult } from './services/connectivity-service';
 import { IPResolutionRecords } from './models/ip-resolution-records';
 import { IPResolutionService } from './services/ip-resolution-service';
 import { ConnectivityService } from './services/connectivity-service';
@@ -51,7 +50,7 @@ export class App {
      */
     private setupConnectivityHandling(): void {
         this.connectivity.addListener({
-            onStatusChange: (isHealthy, result) => this.handleConnectivityChange(isHealthy, result),
+            onStatusChange: (isHealthy) => this.handleConnectivityChange(isHealthy),
         });
     }
 
@@ -73,7 +72,7 @@ export class App {
     /**
      * Handle connectivity status changes
      */
-    private handleConnectivityChange(isHealthy: boolean, result: ConnectivityCheckResult): void {
+    private handleConnectivityChange(isHealthy: boolean): void {
         this.view.updateConnectionStatus(isHealthy);
 
         this.restartIPResolution();

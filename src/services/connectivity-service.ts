@@ -16,7 +16,6 @@ export interface ConnectivityStatusListener {
 export class ConnectivityService {
     private isHealthy: boolean;
     private lastHealthStatus: boolean | null = null;
-    private lastStatusResult: ConnectivityCheckResult | null = null;
     private listeners: ConnectivityStatusListener[] = [];
     private readonly pingUrl: string;
     private readonly requestTimeoutMillis = 5000;
@@ -102,7 +101,6 @@ export class ConnectivityService {
     private notifyIfChanged(isHealthy: boolean, result: ConnectivityCheckResult) {
         // Update internal status
         this.isHealthy = isHealthy;
-        this.lastStatusResult = result;
 
         // Don't notify listeners if:
         // 1. Status hasn't changed, OR
