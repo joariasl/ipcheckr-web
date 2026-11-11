@@ -8,4 +8,8 @@ export class IPResolutionRecords {
     add(ipResolution: IPResolution) {
         this.records.push(ipResolution);
     }
+
+    clear() {
+        this.records.length = 0;
+    }
 }
