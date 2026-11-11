@@ -1,26 +1,7 @@
 import './style.css';
 import './navbar.css';
 
-import { IPResolutionRecords } from './models/ip-resolution-records';
-import { IPResolutionService } from './services/ip-resolution-service';
-import { IPCheckerView } from './views/ip-checker-view';
+import { App } from './app';
 
-const view = new IPCheckerView(document.querySelector<HTMLDivElement>('#app')!);
-const resolutions = new IPResolutionRecords();
-
-view.render();
-view.showUserAgent();
-view.showResolving();
-
-const resolver = new IPResolutionService({
-    onResolution: (resolution) => {
-        resolutions.add(resolution);
-        view.showIP(resolution.ip);
-        view.showResolution(resolution);
-    },
-    onNotFound: (family, protocol) => view.showNotFound(family, protocol),
-    onFetchFailure: (family) => view.showFetchFailure(family),
-    onWarning: (family) => view.showWarning(family),
-});
-
-resolver.start();
+const app = new App(document.querySelector<HTMLDivElement>('#app')!);
+void app.start();

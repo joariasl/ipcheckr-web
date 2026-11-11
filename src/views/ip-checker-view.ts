@@ -28,10 +28,45 @@ export class IPCheckerView {
 
     showResolving() {
         for (const family of ['IPv4', 'IPv6'] as const) {
+            const familyElement = this.familyElement(family);
+            const ipElement = familyElement.querySelector<HTMLSpanElement>('.ip-address');
+            // Reset IP address to placeholder
+            if (ipElement) {
+                ipElement.textContent = family === 'IPv4' ? '-- -- -- --' : '-- -- -- -- -- --';
+                ipElement.hidden = false;
+            }
+
             const progressElement = document.createElement('progress');
             progressElement.textContent = 'Resolving...'
-            this.familyElement(family).querySelector<HTMLSpanElement>('.status')!.replaceChildren(progressElement);
+            familyElement.querySelector<HTMLSpanElement>('.status')!.replaceChildren(progressElement);
         }
+    }
+
+    resetIPDisplay() {
+        for (const family of ['IPv4', 'IPv6'] as const) {
+            const familyElement = this.familyElement(family);
+            const statusElement = familyElement.querySelector<HTMLSpanElement>('.status');
+
+            this.showResolving();
+            
+            // Clear any error messages
+            familyElement.querySelector<HTMLSpanElement>('.ip-error')?.remove();
+            
+            // Clear status
+            if (statusElement) {
+                statusElement.replaceChildren();
+            }
+            
+            // Clear resolution records
+            const tbody = familyElement.querySelector<HTMLTableSectionElement>('.ip-resolution-records tbody');
+            if (tbody) {
+                tbody.replaceChildren();
+            }
+        }
+    }
+
+    cleanStatus(statusElement: HTMLSpanElement) {
+        statusElement.replaceChildren();
     }
 
     showIP(ipAddress: IPAddress) {
@@ -69,12 +104,12 @@ export class IPCheckerView {
         row.append(performanceCell);
 
         familyElement.querySelector<HTMLTableSectionElement>('.ip-resolution-records tbody')!.append(row);
-        familyElement.querySelector<HTMLSpanElement>('.status')?.remove();
+        this.cleanStatus(familyElement.querySelector<HTMLSpanElement>('.status')!);
     }
 
     showNotFound(family: IPFamily, protocol: 'STUN' | 'HTTP') {
         const familyElement = this.familyElement(family);
-        familyElement.querySelector<HTMLSpanElement>('.status')?.remove();
+        this.cleanStatus(familyElement.querySelector<HTMLSpanElement>('.status')!);
 
         const row = document.createElement('tr');
         const protocolCell = document.createElement('td');
@@ -96,7 +131,7 @@ export class IPCheckerView {
     showFetchFailure(family: IPFamily) {
         this.showError(family, `Fetch failed (likely no ${family} connectivity)`);
         const familyElement = this.familyElement(family);
-        familyElement.querySelector<HTMLSpanElement>('.status')?.remove();
+        this.cleanStatus(familyElement.querySelector<HTMLSpanElement>('.status')!);
     }
 
     showWarning(family: IPFamily) {
@@ -118,5 +153,24 @@ export class IPCheckerView {
 
     private familyElement(family: IPFamily) {
         return this.root.querySelector<HTMLElement>(family === 'IPv4' ? '#ipv4' : '#ipv6')!;
+    }
+
+    updateConnectionStatus(isOnline: boolean) {
+        const statusElement = this.root.querySelector<HTMLElement>('#connection-status');
+        if (!statusElement) return;
+
+        const textElement = statusElement.querySelector<HTMLSpanElement>('.connection-text');
+        
+        if (isOnline) {
+            statusElement.classList.remove('offline');
+            if (textElement) {
+                textElement.textContent = 'Online';
+            }
+        } else {
+            statusElement.classList.add('offline');
+            if (textElement) {
+                textElement.textContent = 'Offline';
+            }
+        }
     }
 }
