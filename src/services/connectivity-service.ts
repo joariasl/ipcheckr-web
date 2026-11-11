@@ -41,6 +41,9 @@ export class ConnectivityService {
             isHealthy,
         };
         this.notifyIfChanged(isHealthy, result);
+        if (isHealthy) {
+            this.checkConnectivity();
+        }
     }
 
     /**
@@ -101,6 +104,12 @@ export class ConnectivityService {
     private notifyIfChanged(isHealthy: boolean, result: ConnectivityCheckResult) {
         // Update internal status
         this.isHealthy = isHealthy;
+
+        // Skip navigator 'online' notifications as they're unreliable
+        // Only notify on navigator 'offline' or any ping changes
+        if (isHealthy && result.type === 'navigator') {
+            return;
+        }
 
         // Don't notify listeners if:
         // 1. Status hasn't changed, OR

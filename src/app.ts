@@ -4,6 +4,7 @@ import type { IPResolution } from './models/ip-resolution';
 import { IPResolutionRecords } from './models/ip-resolution-records';
 import { IPResolutionService } from './services/ip-resolution-service';
 import { ConnectivityService } from './services/connectivity-service';
+import type { ConnectivityCheckResult } from './services/connectivity-service';
 import { IPCheckerView } from './views/ip-checker-view';
 
 export class App {
@@ -50,7 +51,7 @@ export class App {
      */
     private setupConnectivityHandling(): void {
         this.connectivity.addListener({
-            onStatusChange: (isHealthy) => this.handleConnectivityChange(isHealthy),
+            onStatusChange: (isHealthy, result) => this.handleConnectivityChange(isHealthy, result),
         });
     }
 
@@ -72,11 +73,13 @@ export class App {
     /**
      * Handle connectivity status changes
      */
-    private handleConnectivityChange(isHealthy: boolean): void {
+    private handleConnectivityChange(isHealthy: boolean, result: ConnectivityCheckResult): void {
         this.view.updateConnectionStatus(isHealthy);
 
-        // Only restart IP resolution when connectivity is restored
-        if (isHealthy) {
+        // Only restart IP resolution when ping check confirms connectivity is restored
+        // (not on navigator.onLine events which may fire before network is actually usable)
+        if (isHealthy && result.type === 'ping') {
+            console.log('Ping connectivity confirmed, restarting IP resolution...');
             this.restartIPResolution();
         }
     }
