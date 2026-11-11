@@ -15,6 +15,10 @@ export default defineConfig({
       },
     },
   },
+  esbuild: {
+    pure: ['console.log', 'console.info'],
+    drop: ['debugger'],
+  },
   plugins: [
     ViteMinifyPlugin(),
     ViteMinifyRawHtml(),
