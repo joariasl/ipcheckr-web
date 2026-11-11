@@ -17,7 +17,7 @@ export class IPCheckerView {
     render() {
         this.root.replaceChildren(appTemplate.content.cloneNode(true));
         this.root.querySelector<HTMLButtonElement>('#refresh-button')!.addEventListener('click', () => {
-            window.location.reload();
+            window.location.assign(window.location.href);
         });
     }
 
