@@ -1,9 +1,9 @@
-name: cloudflare-pages-build-deployment-node
+name: cloudflare-workers-build-deployment-node
 
 on:
   push:
     branches:
-      - cf-pages
+      - main
   workflow_dispatch:
 
 jobs:
@@ -27,7 +27,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v7
         with:
-          name: cloudflare-pages
+          name: dist
           path: dist/
           if-no-files-found: error
 
@@ -35,20 +35,20 @@ jobs:
     needs: build
 
     environment:
-      name: cloudflare-pages
+      name: cloudflare-workers
 
     runs-on: ubuntu-latest
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v8
         with:
-          name: cloudflare-pages
+          name: dist
           path: dist
 
-      - name: Deploy to Cloudflare Pages
+      - name: Deploy to Cloudflare Workers
         id: deployment
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name="${{ secrets.CLOUDFLARE_PAGES_PROJECT_NAME }}" --branch="${{ github.ref_name }}"
+          command: deploy --config dist/wrangler.json
