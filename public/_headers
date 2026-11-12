@@ -1,0 +1,18 @@
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+
+/*
+  ! Cache-Control
+  Cache-Control: public, max-age=86400
+
+/
+  Cache-Control: stale-if-error=604800
+
+/assets/*
+  ! Cache-Control
+  Cache-Control: public, max-age=31556952, immutable
+
+/ping.json
+  ! Cache-Control
+  Cache-Control: public, max-age=0, must-revalidate
