@@ -10,11 +10,13 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.69.0",
     "@types/html-minifier-terser": "^7.0.2",
     "@types/node": "^26.6.6",
     "html-minifier-terser": "^7.2.0",
     "typescript": "~7.0.2",
     "vite": "^8.3.6",
-    "vite-plugin-minify": "^3.0.0"
+    "vite-plugin-minify": "^3.0.0",
+    "wrangler": "^4.160.1"
   }
 }
