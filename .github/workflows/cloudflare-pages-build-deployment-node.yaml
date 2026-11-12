@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - cf-pages
   workflow_dispatch:
 
 jobs:
