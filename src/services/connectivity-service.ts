@@ -15,13 +15,17 @@ export interface ConnectivityStatusListener {
 
 export class ConnectivityService {
     private isHealthy: boolean;
-    private lastHealthStatus: boolean | null = null;
+    private lastResult: ConnectivityCheckResult;
     private listeners: ConnectivityStatusListener[] = [];
     private readonly pingUrl: string;
     private readonly requestTimeoutMillis = 5000;
 
     constructor(pingUrl: string = '/ping.json') {
-        this.isHealthy = navigator.onLine;
+        this.isHealthy = this.checkNavigatorOnLine();
+        this.lastResult = {
+            type: 'navigator',
+            isHealthy: this.isHealthy,
+        };
         this.pingUrl = pingUrl;
         this.setupListeners();
     }
@@ -44,6 +48,10 @@ export class ConnectivityService {
         if (isHealthy) {
             this.checkConnectivity();
         }
+    }
+
+    checkNavigatorOnLine() {
+        return navigator.onLine;
     }
 
     /**
@@ -78,15 +86,16 @@ export class ConnectivityService {
             this.notifyIfChanged(isHealthy, result);
             return result;
         } catch (error) {
+            const isHealthy = false;
             const errorMessage = error instanceof Error ? error.message : String(error);
 
             console.error('Network connectivity check failed:', errorMessage);
             const result: ConnectivityCheckResult = {
                 type: 'ping',
-                isHealthy: false,
+                isHealthy: isHealthy,
                 error: errorMessage,
             };
-            this.notifyIfChanged(false, result);
+            this.notifyIfChanged(isHealthy, result);
             return result;
         }
     }
@@ -102,25 +111,12 @@ export class ConnectivityService {
     }
 
     private notifyIfChanged(isHealthy: boolean, result: ConnectivityCheckResult) {
+        if (this.getStatus() === isHealthy && (isHealthy && this.lastResult.type === 'navigator')) {
+            return;
+        }
+
         // Update internal status
-        this.isHealthy = isHealthy;
-
-        // Skip navigator 'online' notifications as they're unreliable
-        // Only notify on navigator 'offline' or any ping changes
-        if (isHealthy && result.type === 'navigator') {
-            return;
-        }
-
-        // Don't notify listeners if:
-        // 1. Status hasn't changed, OR
-        // 2. This is the initial check (lastHealthStatus is null)
-        if (this.lastHealthStatus === null || this.lastHealthStatus === isHealthy) {
-            this.lastHealthStatus = isHealthy;
-            return;
-        }
-
-        // Actual status change detected - notify listeners
-        this.lastHealthStatus = isHealthy;
+        this.setStatus(isHealthy);
         this.notifyListeners(result);
     }
 
@@ -140,5 +136,9 @@ export class ConnectivityService {
 
     getStatus(): boolean {
         return this.isHealthy;
+    }
+
+    setStatus(status: boolean): void {
+        this.isHealthy = status;
     }
 }
