@@ -15,17 +15,12 @@ export interface ConnectivityStatusListener {
 
 export class ConnectivityService {
     private isHealthy: boolean;
-    private lastResult: ConnectivityCheckResult;
     private listeners: ConnectivityStatusListener[] = [];
     private readonly pingUrl: string;
     private readonly requestTimeoutMillis = 5000;
 
     constructor(pingUrl: string = '/ping.json') {
         this.isHealthy = this.checkNavigatorOnLine();
-        this.lastResult = {
-            type: 'navigator',
-            isHealthy: this.isHealthy,
-        };
         this.pingUrl = pingUrl;
         this.setupListeners();
     }
@@ -117,7 +112,6 @@ export class ConnectivityService {
 
         // Update internal status
         this.setStatus(isHealthy);
-        this.lastResult = result;
         this.notifyListeners(result);
     }
 
