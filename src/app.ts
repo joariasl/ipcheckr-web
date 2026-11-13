@@ -67,7 +67,7 @@ export class App {
      * Start periodic connectivity checks
      */
     private startPeriodicChecks(): void {
-        void this.connectivity.checkConnectivityPeriodic(30000);
+        void this.connectivity.checkConnectivityPeriodic(5000);
     }
 
     /**
