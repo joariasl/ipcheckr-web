@@ -76,11 +76,13 @@ export class App {
     private handleConnectivityChange(isHealthy: boolean, result: ConnectivityCheckResult): void {
         this.view.updateConnectionStatus(isHealthy);
 
-        // Only restart IP resolution when ping check confirms connectivity is restored
-        // (not on navigator.onLine events which may fire before network is actually usable)
-        if (isHealthy && result.type === 'ping') {
-            console.log('Ping connectivity confirmed, restarting IP resolution...');
-            this.restartIPResolution();
+        if (result.type !== 'ping') {
+            this.connectivity.checkConnectivity().then(result => {
+                // Only restart IP resolution when ping check confirms connectivity is restored
+                // (not on navigator.onLine events which may fire before network is actually usable)
+                console.log('Ping connectivity confirmed, restarting IP resolution...', result);
+                this.restartIPResolution();
+            });
         }
     }
 
