@@ -111,7 +111,7 @@ export class ConnectivityService {
     }
 
     private notifyIfChanged(isHealthy: boolean, result: ConnectivityCheckResult) {
-        if (this.getStatus() === isHealthy || (isHealthy && this.lastResult.type === 'navigator')) {
+        if (this.getStatus() === isHealthy) {
             return;
         }
 
