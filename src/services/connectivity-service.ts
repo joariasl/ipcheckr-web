@@ -111,12 +111,13 @@ export class ConnectivityService {
     }
 
     private notifyIfChanged(isHealthy: boolean, result: ConnectivityCheckResult) {
-        if (this.getStatus() === isHealthy && (isHealthy && this.lastResult.type === 'navigator')) {
+        if (this.getStatus() === isHealthy || (isHealthy && this.lastResult.type === 'navigator')) {
             return;
         }
 
         // Update internal status
         this.setStatus(isHealthy);
+        this.lastResult = result;
         this.notifyListeners(result);
     }
 
