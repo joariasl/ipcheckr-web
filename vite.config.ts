@@ -31,7 +31,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       ViteMinifyPlugin(),
       ViteMinifyRawHtml(),
-      cloudflare({ persistState: false }),
+      isDevelopment ? cloudflare({ persistState: false }) : undefined,
     ],
   }
 });
