@@ -1,5 +1,9 @@
 # ipcheckr
 
+![health](https://status.ipcheckr.org/api/v1/endpoints/_ipcheckr/health/badge.svg)
+![uptimes](https://status.ipcheckr.org/api/v1/endpoints/_ipcheckr/uptimes/30d/badge.svg)
+![response-times](https://status.ipcheckr.org/api/v1/endpoints/_ipcheckr/response-times/24h/badge.svg)
+
 An Open Source public IPv4 and IPv6 Web + JavaScript viewer designed to be simple and fast.
 
 Key features:
