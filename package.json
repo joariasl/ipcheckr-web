@@ -17,6 +17,6 @@
     "typescript": "~7.0.2",
     "vite": "^8.3.6",
     "vite-plugin-minify": "^3.0.0",
-    "wrangler": "^4.160.1"
+    "wrangler": "^4.162.0"
   }
 }
