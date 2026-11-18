@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "@cloudflare/vite-plugin": "^1.69.0",
+    "@cloudflare/vite-plugin": "^1.69.1",
     "@types/html-minifier-terser": "^7.0.2",
     "@types/node": "^26.6.6",
     "html-minifier-terser": "^7.2.0",
