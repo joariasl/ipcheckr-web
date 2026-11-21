@@ -9,9 +9,11 @@ appTemplate.innerHTML = rawAppTemplate;
 
 export class IPCheckerView {
     private readonly root: HTMLDivElement;
+    private readonly baseTitle: string;
 
     constructor(root: HTMLDivElement) {
         this.root = root;
+        this.baseTitle = document.title;
     }
 
     render() {
@@ -158,7 +160,13 @@ export class IPCheckerView {
         return this.root.querySelector<HTMLElement>(family === 'IPv4' ? '#ipv4' : '#ipv6')!;
     }
 
+    updateDocumentTitle(isOnline: boolean) {
+        document.title = `${isOnline ? '🟢' : '🔴'} ${this.baseTitle}`;
+    }
+
     updateConnectionStatus(isOnline: boolean) {
+        this.updateDocumentTitle(isOnline);
+
         const statusElement = this.root.querySelector<HTMLElement>('#connection-status');
         if (!statusElement) return;
 
