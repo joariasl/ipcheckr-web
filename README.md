@@ -12,6 +12,7 @@ Key features:
 - IPv4 and IPv6 compatible
 - Through CDN to warranty network speed
 - Small and simple when you only need reveal your public IPs
+- Shows the connection status
 
 ## Why this project?
 
