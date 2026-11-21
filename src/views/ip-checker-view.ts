@@ -9,11 +9,9 @@ appTemplate.innerHTML = rawAppTemplate;
 
 export class IPCheckerView {
     private readonly root: HTMLDivElement;
-    private readonly baseTitle: string;
 
     constructor(root: HTMLDivElement) {
         this.root = root;
-        this.baseTitle = document.title;
     }
 
     render() {
@@ -160,12 +158,24 @@ export class IPCheckerView {
         return this.root.querySelector<HTMLElement>(family === 'IPv4' ? '#ipv4' : '#ipv6')!;
     }
 
-    updateDocumentTitle(isOnline: boolean) {
-        document.title = `${isOnline ? '🟢' : '🔴'} ${this.baseTitle}`;
+    updateFavicon(isOnline: boolean) {
+        let favicon = document.querySelector<HTMLLinkElement>("link[rel~='icon']");
+        const faviconSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <circle cx="8" cy="8" r="4" fill="${isOnline ? '#10b981' : '#ef4444'}"/>
+        </svg>
+        `;
+
+        if (!favicon) {
+            favicon = document.createElement('link');
+            favicon.rel = 'icon';
+            document.head.appendChild(favicon);
+        }
+        favicon.href = `data:image/svg+xml,${encodeURIComponent(faviconSvg)}`;
     }
 
     updateConnectionStatus(isOnline: boolean) {
-        this.updateDocumentTitle(isOnline);
+        this.updateFavicon(isOnline);
 
         const statusElement = this.root.querySelector<HTMLElement>('#connection-status');
         if (!statusElement) return;
